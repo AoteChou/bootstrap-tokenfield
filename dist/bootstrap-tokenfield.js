@@ -193,6 +193,13 @@
 
       this.$input.typeahead.apply( this.$input, args )
       this.$hint = this.$input.prev('.tt-hint')
+      // make dropdown menu width equal with grandparent's width
+      this.$menu = this.$input.('tt-dropdown-menu')
+      var minWidth = $menu.parent().parent().width()
+      this.$menu.css( 'min-width', minWidth + 'px' )
+      this.$menu.css( 'right', '0px')
+      this.$menu.css( 'left', 'auto')
+      
       this.typeahead = true
     }
   }
