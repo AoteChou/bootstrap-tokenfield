@@ -108,6 +108,18 @@
                     .prop( 'id', id + '-tokenfield' )
                     .prop( 'tabindex', this.$element.data('original-tabindex') )
 
+    //// Create a dropdown
+    if ("dropdown" in this.options ) {
+        this.$dropdown = $('<div class="dropdown token-dropdown" />').appendTo(this.$wrapper)
+
+        this.$dropdown_icon = $('<div class="glyphicon glyphicon-filter" data-toggle="dropdown"/>').appendTo(this.$dropdown)
+        this.$dropdown_menu = $('<ul class="dropdown-menu" aria-labelledby="dLabel"/>').appendTo(this.$dropdown)
+        var dropdown_opt = this.options.dropdown
+        for(var i in dropdown_opt.list) {
+          this.addDropdownItem(dropdown_opt.field, dropdown_opt.list[i])
+        }
+    }
+
     // Re-route original input label to new input
     var $label = $( 'label[for="' + this.$element.prop('id') + '"]' )
     if ( $label.length ) {
@@ -194,11 +206,22 @@
       this.$input.typeahead.apply( this.$input, args )
       this.$hint = this.$input.prev('.tt-hint')
       // make dropdown menu width equal with grandparent's width
-      this.$menu = this.$input.('tt-dropdown-menu')
-      var minWidth = $menu.parent().parent().width()
+      this.$menu = this.$input.siblings('.tt-menu').first()
+      var minWidth = this.$menu.parent().parent().width()
       this.$menu.css( 'min-width', minWidth + 'px' )
-      this.$menu.css( 'right', '0px')
-      this.$menu.css( 'left', 'auto')
+      //this.$input.bind('typeahead:open', function(){
+      //    console.log("???...")
+      //    var offsetLeft = _self.$input.parent().parent().offset().left - _self.$input.offset().left + 10
+      //    _self.$menu.css( 'right', 'auto')
+      //    _self.$menu.css( 'left', offsetLeft + 'px')
+      //})
+      this.$wrapper.on('tokenfield:removedtoken tokenfield:createdtoken tokenfield:editedtoken', function(){
+          setTimeout(function(){
+            var offsetLeft = _self.$input.parent().parent().offset().left - _self.$input.offset().left + 10
+            _self.$menu.css( 'right', 'auto')
+            _self.$menu.css( 'left', offsetLeft + 'px')
+          }, 5)
+      })
       
       this.typeahead = true
     }
@@ -436,13 +459,31 @@
           return false
         })
         .on('typeahead:selected typeahead:autocompleted', function (e, datum, dataset) {
-          // Create token
-          if (_self.createToken( datum )) {
-            _self.$input.typeahead('val', '')
-            if (_self.$input.data( 'edit' )) {
-              _self.unedit(true)
-            }
+          //Create token
+          //if (_self.createToken( datum )) {
+          //  _self.$input.typeahead('val', '')
+          if(_self.$input.val().indexOf("<>") < 0){
+              _self.createToken( datum )
+              _self.$input.typeahead('val', '')
           }
+          if (_self.$input.data( 'edit' )) {
+             _self.unedit(true)
+          }
+          //}
+          //_self.$input.typeahead('val', '')
+          //_self.$input.inputmask(
+          //      {   mask: datum.value.toString(),
+          //          greedy: false,
+          //          placeholder:" ",
+          //          definitions: {
+          //            '.': {
+          //              validator: ".",
+          //              cardinality: 1,
+          //              casing: "lower"
+          //            }
+          //          }
+          //      });
+          //setTimeout(function() {$(".tt-input").mouseenter()}, 0);
         })
 
       // Listen to window resize
@@ -979,6 +1020,9 @@
       var $_element = this.$element;
 
       return $_element;
+  }
+  , addDropdownItem: function(type, item) {
+      $('<li><a href="javascript:void(0)" onclick="$(\'.tt-input\').typeahead(\'val\', \''+item+'\');$(\'.tt-input\').typeahead(\'open\')">' + item + '</a></li>').appendTo(this.$dropdown_menu)
   }
 
   }

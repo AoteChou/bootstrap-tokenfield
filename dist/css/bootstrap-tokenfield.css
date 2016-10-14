@@ -59,7 +59,10 @@
 }
 .tokenfield .token.active {
   border-color: #52a8ec;
+  background-color: #52a8ec;
+  background-color: rgba(82, 168, 236, 0.8);
   border-color: rgba(82, 168, 236, 0.8);
+  color: white;
 }
 .tokenfield .token.duplicate {
   border-color: #ebccd1;
@@ -207,4 +210,20 @@
 .tokenfield.rtl .token .token-label {
   padding-left: 0px;
   padding-right: 4px;
+}
+
+.token-dropdown {
+    position: absolute;
+    display: block;
+    float: left;
+    top: 10px;
+    cursor: pointer;
+    z-index: 10000;
+    right: 30px;
+}
+
+.ui-state-highlight {
+    background: #f3f3f3;
+    height: 1.5em;
+    line-height: 1.2em;
 }
