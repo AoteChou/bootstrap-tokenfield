@@ -264,7 +264,7 @@
 
       var $token = $('<div class="token" />')
             .append('<span class="token-label" />')
-            .append('<a href="#" class="close" tabindex="-1">&times;</a>')
+            .append('<a href="javascript:void(0)" class="close" tabindex="-1">&times;</a>')
             .data('attrs', attrs)
 
       // Insert token into HTML
@@ -861,7 +861,8 @@
     }
 
   , remove: function (e, direction) {
-      if (this.$input.is(document.activeElement) || this._disabled || this._readonly) return
+      // if (this.$input.is(document.activeElement) || this._disabled || this._readonly) return
+      if (this._disabled || this._readonly) return
 
       var $token = (e.type === 'click') ? $(e.target).closest('.token') : this.$wrapper.find('.token.active')
 
